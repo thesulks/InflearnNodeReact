@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const port = 5000;
 
 const bodyParser = require("body-parser");
 // Content-type: application/x-www-form-urlencoded
@@ -27,7 +26,7 @@ app.get("/", (req, res) => res.send("Hello, World!"));
 
 const { User } = require("./models/User.js");
 // 회원 가입을 위한 route
-app.post("/register", (req, res) => {
+app.post("/api/users/register", (req, res) => {
   const user = new User(req.body); // body-parser 사용했기 때문에 req.body 가능
   // user model에 저장
   user.save((err, userInfo) => {
@@ -74,7 +73,7 @@ const { auth } = require("./middleware/auth.js");
 
 app.get("/api/users/auth", auth, (req, res) => {
   // 미틀웨어를 통과해 왔다 == Authentication이 true
-  req.status(200).json({
+  res.status(200).json({
     _id: req.user._id,
     // 현재: role 1 어드민
     isAdmin: req.user.role === 0 ? false : true,
@@ -96,4 +95,9 @@ app.get("/api/users/logout", auth, (req, res) => {
   });
 });
 
+app.get("/api/hello", (req, res) => {
+  res.send("안녕하세요");
+});
+
+const port = 5000;
 app.listen(port, () => console.log(`listening ${port}...`));
